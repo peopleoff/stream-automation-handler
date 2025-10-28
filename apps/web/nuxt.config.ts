@@ -19,4 +19,8 @@ export default defineNuxtConfig({
       colors: ["cattyshack-purple", "cattyshack-green", "cattyshack-dark"],
     },
   },
+  nitro: {
+    host: "0.0.0.0",
+    port: 3000,
+  },
 });

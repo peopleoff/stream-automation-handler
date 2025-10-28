@@ -5,9 +5,9 @@
 
 import { createAppLogger } from "@cattyshack/shared/utils/logger";
 import { upsertServiceStatus } from "@cattyshack/shared";
-import { loadConfig } from "./config.js";
-import { createTikTokStreamService } from "./services/tiktok-stream.js";
-import { createAutomationExecutor } from "./services/automation-executor.js";
+import { loadConfig } from "./config";
+import { createTikTokStreamService } from "./services/tiktok-stream";
+import { createAutomationExecutor } from "./services/automation-executor";
 
 /**
  * Main service function
