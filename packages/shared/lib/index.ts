@@ -6,10 +6,56 @@
 // Database
 export * from "./db";
 export * from "./db/schema";
-export * from "./db/queries/automation-runs";
-export * from "./db/queries/config";
-export * from "./db/queries/hue-automations";
-export * from "./db/queries/service-status";
+
+// Database query functions (explicit exports to avoid type conflicts)
+export {
+  insertAutomationRun,
+  getRecentRuns,
+  getRunsByAutomation,
+  getFailedRuns,
+  getRunById,
+  getRunsInTimeRange,
+  getRunsByStatus,
+  getRunsByEventType,
+} from "./db/queries/automation-runs";
+
+export {
+  getConfig,
+  updateConfig,
+  getHueConfig,
+  updateHueConfig,
+  updateTiktokConfig,
+  getTiktokConfig,
+  getAutomationsEnabled,
+} from "./db/queries/config";
+
+export {
+  getAllHueAutomations,
+  getHueAutomationById,
+  createHueAutomation,
+  updateHueAutomation,
+  deleteHueAutomation,
+  getEnabledHueAutomations,
+} from "./db/queries/hue-automations";
+
+export {
+  getServiceStatus,
+  getAllServiceStatuses,
+  upsertServiceStatus,
+  updateServiceHeartbeat,
+  isServiceHeartbeatStale,
+  deleteServiceStatus,
+} from "./db/queries/service-status";
+
+export {
+  getAllTikTokGiftTriggers,
+  getTikTokGiftTriggerById,
+  createTikTokGiftTrigger,
+  updateTikTokGiftTrigger,
+  deleteTikTokGiftTrigger,
+  getEnabledTikTokGiftTriggers,
+  getEnabledTikTokGiftTriggersWithAutomations,
+} from "./db/queries/tiktok-gift-triggers";
 
 // Services
 export * from "./services/hue";

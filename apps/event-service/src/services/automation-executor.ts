@@ -455,13 +455,13 @@ export function createAutomationExecutor(config: AutomationExecutorConfig): Auto
       );
 
       // Log results
-      const successful = results.filter(r => r.success).length;
-      const failed = results.filter(r => !r.success).length;
+      const successful = results.filter((r: { success: boolean }) => r.success).length;
+      const failed = results.filter((r: { success: boolean }) => !r.success).length;
 
       if (failed > 0) {
         logger.warn(`Automation partially executed: ${successful} succeeded, ${failed} failed`, {
           automationId: automation.id,
-          failures: results.filter(r => !r.success),
+          failures: results.filter((r: { success: boolean }) => !r.success),
         });
       } else {
         logger.light(

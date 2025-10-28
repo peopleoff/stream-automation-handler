@@ -4,21 +4,53 @@
   "type": "module",
   "private": true,
   "description": "Shared code for Cattyshack Automation Platform",
-  "main": "./lib/index.ts",
-  "types": "./lib/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./lib/index.ts",
-    "./db": "./lib/db/index.ts",
-    "./db/*": "./lib/db/*.ts",
-    "./db/queries/*": "./lib/db/queries/*.ts",
-    "./services/hue": "./lib/services/hue/index.ts",
-    "./services/streaming": "./lib/services/streaming/index.ts",
-    "./types/*": "./lib/types/*.ts",
-    "./schemas": "./lib/schemas/index.ts",
-    "./schemas/*": "./lib/schemas/*.ts",
-    "./utils/*": "./lib/utils/*.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./db": {
+      "types": "./dist/db/index.d.ts",
+      "default": "./dist/db/index.js"
+    },
+    "./db/*": {
+      "types": "./dist/db/*.d.ts",
+      "default": "./dist/db/*.js"
+    },
+    "./db/queries/*": {
+      "types": "./dist/db/queries/*.d.ts",
+      "default": "./dist/db/queries/*.js"
+    },
+    "./services/hue": {
+      "types": "./dist/services/hue/index.d.ts",
+      "default": "./dist/services/hue/index.js"
+    },
+    "./services/streaming": {
+      "types": "./dist/services/streaming/index.d.ts",
+      "default": "./dist/services/streaming/index.js"
+    },
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "default": "./dist/types/*.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "default": "./dist/schemas/index.js"
+    },
+    "./schemas/*": {
+      "types": "./dist/schemas/*.d.ts",
+      "default": "./dist/schemas/*.js"
+    },
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "default": "./dist/utils/*.js"
+    }
   },
   "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "db:setup": "npm run db:generate && npm run db:migrate",
     "db:generate": "drizzle-kit generate",

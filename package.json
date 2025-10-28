@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build -w @cattyshack/shared && npm run build -w web -w event-service",
     "lint": "npm run lint --workspaces --if-present",
     "lint:fix": "npm run lint:fix --workspaces --if-present",
     "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/*/.nuxt apps/*/dist packages/*/dist",

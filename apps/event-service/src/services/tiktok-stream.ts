@@ -233,7 +233,7 @@ export function createTikTokStreamService(config: TikTokStreamConfig): TikTokStr
           disconnectedAt: Date.now(),
           reason: "Stream ended or connection lost",
         }),
-      }).catch(err => {
+      }).catch((err: unknown) => {
         logger.error("Failed to update service status on disconnect", err as Error);
       });
 
