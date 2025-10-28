@@ -67,14 +67,20 @@ export function createAutomationExecutor(config: AutomationExecutorConfig): Auto
    */
   async function loadTikTokGiftTriggers(): Promise<void> {
     try {
-      // Clear existing decay timers before loading new automations
-      // This ensures that if automation configs change, old timers don't persist
-      if (decayTimers.size > 0) {
-        logger.debug("Clearing existing decay timers before reloading automations...");
-        stopAllDecayTimers();
-      }
-
       tiktokGiftTriggers = await getEnabledTikTokGiftTriggersWithAutomations();
+
+      // Clear decay timers only for automations that no longer exist
+      // This preserves active timers during routine reloads
+      if (decayTimers.size > 0) {
+        const activeAutomationIds = new Set(tiktokGiftTriggers.map(t => t.automation.id));
+
+        for (const [key, timer] of decayTimers.entries()) {
+          if (!activeAutomationIds.has(timer.automationId)) {
+            stopDecayTimer(timer.automationId, timer.lightId);
+            logger.debug(`Cleared orphaned decay timer: ${key}`);
+          }
+        }
+      }
 
       logger.info(`Loaded ${tiktokGiftTriggers.length} enabled TikTok gift triggers`);
     } catch (error) {
