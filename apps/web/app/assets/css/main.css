@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  /* Cattyshack Purple - Primary Brand Color (#832CFB) */
+  --color-cattyshack-purple-50: #F2EEFD;
+  --color-cattyshack-purple-100: #E5DDFC;
+  --color-cattyshack-purple-200: #CCBCFA;
+  --color-cattyshack-purple-300: #B29AF8;
+  --color-cattyshack-purple-400: #8C5AFC;
+  --color-cattyshack-purple-500: #832CFB;
+  --color-cattyshack-purple-600: #6F25D5;
+  --color-cattyshack-purple-700: #5C1FB0;
+  --color-cattyshack-purple-800: #48188A;
+  --color-cattyshack-purple-900: #341164;
+  --color-cattyshack-purple-950: #210B3F;
+
+  /* Cattyshack Dark - Dark Mode Backgrounds (#310067) */
+  --color-cattyshack-dark-50: #F0E6F5;
+  --color-cattyshack-dark-100: #E2CDEC;
+  --color-cattyshack-dark-200: #C69AD9;
+  --color-cattyshack-dark-300: #A967C6;
+  --color-cattyshack-dark-400: #6E1F95;
+  --color-cattyshack-dark-500: #310067;
+  --color-cattyshack-dark-600: #2A0058;
+  --color-cattyshack-dark-700: #220048;
+  --color-cattyshack-dark-800: #1B0039;
+  --color-cattyshack-dark-900: #140029;
+  --color-cattyshack-dark-950: #0C001A;
+
+  /* Cattyshack Green - Call-to-Action Accent (#61CE70) */
+  --color-cattyshack-green-50: #EBF9EC;
+  --color-cattyshack-green-100: #D8F2DB;
+  --color-cattyshack-green-200: #B2E5B8;
+  --color-cattyshack-green-300: #8BD795;
+  --color-cattyshack-green-400: #76DD83;
+  --color-cattyshack-green-500: #61CE70;
+  --color-cattyshack-green-600: #52AF5F;
+  --color-cattyshack-green-700: #44904E;
+  --color-cattyshack-green-800: #35713E;
+  --color-cattyshack-green-900: #27522D;
+  --color-cattyshack-green-950: #18341C;
+
+  /* Border Radius - Match Cattyshack's 7-8px rounded corners */
+  --ui-radius: 0.4375rem;
+}

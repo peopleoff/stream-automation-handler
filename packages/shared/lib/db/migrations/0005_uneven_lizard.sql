@@ -1,0 +1,1 @@
+ALTER TABLE `config` ADD `automations_enabled` integer DEFAULT 1 NOT NULL;

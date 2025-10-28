@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1759253812577,
+      "tag": "0000_legal_lightspeed",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1759270754720,
+      "tag": "0001_last_colossus",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1761242425437,
+      "tag": "0002_smart_deathbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1761417477694,
+      "tag": "0003_luxuriant_logan",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1761423840717,
+      "tag": "0004_classy_juggernaut",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1761426085500,
+      "tag": "0005_uneven_lizard",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1761493671681,
+      "tag": "0006_fluffy_rage",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1761495547567,
+      "tag": "0007_zippy_centennial",
+      "breakpoints": true
+    }
+  ]
+}

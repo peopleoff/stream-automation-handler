@@ -1,0 +1,29 @@
+{
+  "name": "cattyshack-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cattyshack Automation Platform - Monorepo",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/*/.nuxt apps/*/dist packages/*/dist",
+    "db:generate": "npm run db:generate -w @cattyshack/shared",
+    "db:migrate": "npm run db:migrate -w @cattyshack/shared",
+    "db:studio": "npm run db:studio -w @cattyshack/shared"
+  },
+  "keywords": [
+    "automation",
+    "tiktok",
+    "hue",
+    "philips-hue",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "MIT"
+}

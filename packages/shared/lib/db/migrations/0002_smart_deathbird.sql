@@ -1,0 +1,1 @@
+ALTER TABLE `config` ADD `tiktok_handle` text;
