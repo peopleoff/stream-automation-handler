@@ -21,7 +21,7 @@ import { HueButtonPressError } from "./types";
  * Wrapper for fetch that disables TLS verification for Hue bridge self-signed certs
  * Use this for all Hue bridge API calls
  */
-async function hueFetch(url: string, options?: RequestInit): Promise<Response> {
+export async function hueFetch(url: string, options?: RequestInit): Promise<Response> {
   const originalRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 

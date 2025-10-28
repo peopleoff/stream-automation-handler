@@ -11,6 +11,7 @@ export * from "./types";
 
 // Export simple REST API functions (for frontend)
 export {
+  hueFetch,
   discoverHueBridge,
   createHueUser,
   testHueConnection,

@@ -9,7 +9,7 @@ import {
 } from "@cattyshack/shared/db/queries/tiktok-gift-triggers";
 import { getAutomationsEnabled } from "@cattyshack/shared/db/queries/config";
 import { insertAutomationRun } from "@cattyshack/shared/db/queries/automation-runs";
-import { executeAutomationAction } from "@cattyshack/shared/services/hue";
+import { executeAutomationAction, hueFetch } from "@cattyshack/shared/services/hue";
 import type { AppLogger } from "@cattyshack/shared/utils/logger";
 import type { HueAutomation } from "@cattyshack/shared/db/schema";
 import type {
@@ -125,8 +125,8 @@ export function createAutomationExecutor(config: AutomationExecutorConfig): Auto
   ): Promise<void> {
     try {
       // Fetch current light state
-      const lightResponse = await fetch(
-        `http://${serviceConfig.hueIp}/api/${serviceConfig.hueUsername}/lights/${lightId}`
+      const lightResponse = await hueFetch(
+        `https://${serviceConfig.hueIp}/api/${serviceConfig.hueUsername}/lights/${lightId}`
       );
 
       if (!lightResponse.ok) {
@@ -147,8 +147,8 @@ export function createAutomationExecutor(config: AutomationExecutorConfig): Auto
       );
 
       // Update light brightness
-      await fetch(
-        `http://${serviceConfig.hueIp}/api/${serviceConfig.hueUsername}/lights/${lightId}/state`,
+      await hueFetch(
+        `https://${serviceConfig.hueIp}/api/${serviceConfig.hueUsername}/lights/${lightId}/state`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
