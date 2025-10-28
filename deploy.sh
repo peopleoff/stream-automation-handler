@@ -156,15 +156,6 @@ else
 fi
 echo ""
 
-# Step 4.5: Prune devDependencies (optional but saves space)
-log_info "Removing devDependencies to save space..."
-if npm prune --production; then
-  log_success "DevDependencies removed successfully"
-else
-  log_warning "Failed to prune devDependencies (non-critical)"
-fi
-echo ""
-
 # Step 5: PM2 process management
 log_info "Managing PM2 processes..."
 

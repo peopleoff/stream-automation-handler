@@ -4,7 +4,7 @@
  */
 
 import { getConfig } from "@cattyshack/shared/db/queries/config";
-import type { ServiceConfig } from "./types";
+import type { ServiceConfig } from "./types.js";
 import dotenv from "dotenv";
 
 // Load environment variables

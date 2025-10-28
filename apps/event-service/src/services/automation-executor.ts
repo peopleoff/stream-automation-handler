@@ -18,8 +18,8 @@ import type {
   AutomationActionConfig,
   ServiceConfig,
   DecayConfig,
-} from "../types";
-import type { TikTokStreamService } from "./tiktok-stream";
+} from "../types.js";
+import type { TikTokStreamService } from "./tiktok-stream.js";
 
 export interface AutomationExecutorService {
   start(): Promise<void>;
