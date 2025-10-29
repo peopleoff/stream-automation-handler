@@ -6,6 +6,7 @@
  */
 
 import type { AutomationRun, ServiceStatus } from "@cattyshack/shared";
+
 import { createDbWatcher } from "@cattyshack/shared";
 
 export default defineEventHandler(async (event) => {

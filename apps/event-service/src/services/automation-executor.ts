@@ -49,6 +49,9 @@ interface DecayTimerState {
 // Default max accumulated time (5 minutes in milliseconds)
 const DEFAULT_MAX_ACCUMULATED_TIME = 300000;
 
+// Gift timeout for waiting for final event (3 seconds)
+const GIFT_TIMEOUT_MS = 3000;
+
 export function createAutomationExecutor(config: AutomationExecutorConfig): AutomationExecutorService {
   const { serviceConfig, tiktokStream, logger } = config;
 
@@ -60,6 +63,14 @@ export function createAutomationExecutor(config: AutomationExecutorConfig): Auto
 
   // Decay timer state map: key = `${automationId}-${lightId}`
   const decayTimers = new Map<string, DecayTimerState>();
+
+  // Pending gift state map: key = `${userId}-${giftId}`
+  interface PendingGift {
+    event: TikTokGiftEvent;
+    timeoutHandle: NodeJS.Timeout;
+    firstSeenAt: number;
+  }
+  const pendingGifts = new Map<string, PendingGift>();
 
   /**
    * Load TikTok gift triggers from database
@@ -517,6 +528,33 @@ export function createAutomationExecutor(config: AutomationExecutorConfig): Auto
   }
 
   /**
+   * Get unique key for tracking pending gifts
+   */
+  function getPendingGiftKey(event: TikTokGiftEvent): string {
+    return `${event.userId}-${event.giftId}`;
+  }
+
+  /**
+   * Process a final gift event (trigger automations)
+   */
+  async function processFinalGift(event: TikTokGiftEvent): Promise<void> {
+    // Find matching gift triggers
+    const matches = tiktokGiftTriggers.filter(trigger => matchesGiftTrigger(event, trigger));
+
+    if (matches.length === 0) {
+      logger.debug(`No gift triggers matched for ${event.giftName} (x${event.repeatCount})`);
+      return;
+    }
+
+    logger.info(`Found ${matches.length} matching gift trigger(s) for ${event.giftName} (x${event.repeatCount})`);
+
+    // Execute all matching triggers' linked automations
+    for (const trigger of matches) {
+      await executeAutomation(trigger.automation, trigger, event);
+    }
+  }
+
+  /**
    * Handle incoming TikTok event
    */
   async function handleEvent(event: TikTokEvent): Promise<void> {
@@ -533,25 +571,59 @@ export function createAutomationExecutor(config: AutomationExecutorConfig): Auto
       return;
     }
 
-    // Only trigger automations on final gift events (when combo is complete)
-    if (!event.final) {
-      logger.debug(`Ignoring non-final gift event: ${event.giftName} (x${event.repeatCount})`);
-      return;
-    }
+    // Handle gift with timeout tracking for missing final events
+    if (event.final) {
+      // Clear any pending timeout for this gift
+      const key = getPendingGiftKey(event);
+      const pending = pendingGifts.get(key);
+      if (pending) {
+        clearTimeout(pending.timeoutHandle);
+        pendingGifts.delete(key);
+        logger.debug(`Cleared pending timeout for ${event.giftName} from ${event.username}`);
+      }
 
-    // Find matching gift triggers
-    const matches = tiktokGiftTriggers.filter(trigger => matchesGiftTrigger(event, trigger));
+      // Process immediately
+      await processFinalGift(event);
 
-    if (matches.length === 0) {
-      logger.debug(`No gift triggers matched for ${event.giftName} (x${event.repeatCount})`);
-      return;
-    }
+    } else {
+      // Gift streak in progress - track with timeout
+      const key = getPendingGiftKey(event);
+      const existing = pendingGifts.get(key);
 
-    logger.info(`Found ${matches.length} matching gift trigger(s) for ${event.giftName} (x${event.repeatCount})`);
+      // Clear existing timeout if this is a streak update
+      if (existing) {
+        clearTimeout(existing.timeoutHandle);
+        logger.debug(
+          `Streak update: ${event.giftName} x${existing.event.repeatCount} → x${event.repeatCount} from ${event.username}`
+        );
+      }
 
-    // Execute all matching triggers' linked automations
-    for (const trigger of matches) {
-      await executeAutomation(trigger.automation, trigger, event);
+      // Create timeout that will trigger if final never arrives
+      const timeoutHandle = setTimeout(() => {
+        const pending = pendingGifts.get(key);
+        if (pending) {
+          logger.warn(
+            `Gift timeout reached for ${pending.event.giftName} x${pending.event.repeatCount} ` +
+            `from ${pending.event.username} - treating as final`
+          );
+          processFinalGift(pending.event).catch(err => {
+            logger.error("Error processing timeout gift", err as Error);
+          });
+          pendingGifts.delete(key);
+        }
+      }, GIFT_TIMEOUT_MS);
+
+      // Store/update pending gift state
+      pendingGifts.set(key, {
+        event,
+        timeoutHandle,
+        firstSeenAt: existing?.firstSeenAt || Date.now(),
+      });
+
+      logger.debug(
+        `Tracking gift: ${event.giftName} x${event.repeatCount} from ${event.username} ` +
+        `(timeout in ${GIFT_TIMEOUT_MS}ms)`
+      );
     }
   }
 
@@ -605,6 +677,13 @@ export function createAutomationExecutor(config: AutomationExecutorConfig): Auto
 
     // Clear all decay timers
     stopAllDecayTimers();
+
+    // Clear all pending gift timeouts
+    for (const [key, pending] of pendingGifts.entries()) {
+      clearTimeout(pending.timeoutHandle);
+      logger.debug(`Cleared pending gift timeout: ${key}`);
+    }
+    pendingGifts.clear();
 
     // Clear trigger refresh interval
     if (refreshInterval) {
