@@ -176,10 +176,10 @@ function updateActionType(newType: string) {
         };
         break;
       case "setColor":
-        state.action = { type: "setColor", color: "#FF0000", brightness: 75 };
+        state.action = { type: "setColor", color: "#FF0000" };
         break;
       case "randomColors":
-        state.action = { type: "randomColors", brightness: 75, duration: 30 };
+        state.action = { type: "randomColors" };
         break;
     }
   }
@@ -656,59 +656,22 @@ const actionDescription = computed(() => {
                       </div>
                     </UFormField>
 
-                    <UFormField
-                      label="Brightness (Optional)"
-                      name="action.brightness"
-                      help="Leave empty to keep current brightness"
-                    >
-                      <SliderWithInput
-                        v-model="state.action.brightness"
-                        :min="1"
-                        :max="100"
-                        :step="1"
-                        suffix="%"
-                        min-label="1% (Dim)"
-                        mid-label="50% (Medium)"
-                        max-label="100% (Bright)"
-                      />
-                    </UFormField>
+                    <UAlert
+                      color="info"
+                      variant="soft"
+                      icon="i-lucide-info"
+                      description="Current brightness will be preserved when changing colors"
+                    />
                   </div>
 
                   <!-- Random Colors -->
                   <div v-else-if="state.action?.type === 'randomColors'" class="space-y-4">
-                    <UFormField
-                      label="Brightness (Optional)"
-                      name="action.brightness"
-                      help="Leave empty to keep current brightness"
-                    >
-                      <SliderWithInput
-                        v-model="state.action.brightness"
-                        :min="1"
-                        :max="100"
-                        :step="1"
-                        suffix="%"
-                        min-label="1% (Dim)"
-                        mid-label="50% (Medium)"
-                        max-label="100% (Bright)"
-                      />
-                    </UFormField>
-
-                    <UFormField
-                      label="Duration (Optional)"
-                      name="action.duration"
-                      :help="`Cycle colors for ${state.action.duration || 30} seconds`"
-                    >
-                      <SliderWithInput
-                        v-model="state.action.duration"
-                        :min="1"
-                        :max="300"
-                        :step="5"
-                        suffix="s"
-                        min-label="1s (Quick)"
-                        mid-label="30s (Medium)"
-                        max-label="300s (Long)"
-                      />
-                    </UFormField>
+                    <UAlert
+                      color="info"
+                      variant="soft"
+                      icon="i-lucide-info"
+                      description="Lights will cycle through random colors while preserving current brightness"
+                    />
                   </div>
                 </div>
 

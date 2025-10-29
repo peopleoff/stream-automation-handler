@@ -390,7 +390,8 @@ export async function executeAutomationAction(
           const xy = hexToXy(action.color!);
           body.on = true;
           body.xy = xy;
-          if (action.brightness) {
+          // Only set brightness if explicitly provided
+          if (action.brightness !== undefined) {
             body.bri = Math.round((action.brightness / 100) * 254);
           }
           break;
@@ -402,12 +403,19 @@ export async function executeAutomationAction(
           const randomXy = hexToXy(randomHex);
           body.on = true;
           body.xy = randomXy;
-          if (action.brightness) {
+          // Only set brightness if explicitly provided
+          if (action.brightness !== undefined) {
             body.bri = Math.round((action.brightness / 100) * 254);
           }
           break;
         }
       }
+
+      // Log the full request body for debugging
+      console.log(`[Hue API] Light ${lightId} - Action: ${action.type}`, {
+        body,
+        url: `https://${ip}/api/${username}/lights/${lightId}/state`,
+      });
 
       const stateResponse = await hueFetch(`https://${ip}/api/${username}/lights/${lightId}/state`, {
         method: "PUT",

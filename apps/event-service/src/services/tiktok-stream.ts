@@ -246,7 +246,6 @@ export function createTikTokStreamService(config: TikTokStreamConfig): TikTokStr
     // Gift events
     conn.on(WebcastEvent.GIFT, (data: WebcastGiftMessage) => {
       try {
-        console.log("Received gift event:", data);
         const event: TikTokEvent = {
           type: "gift",
           giftId: data.giftId?.toString() || "unknown",
