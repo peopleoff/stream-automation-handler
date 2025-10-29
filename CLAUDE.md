@@ -484,6 +484,155 @@ Copy `.env.example` to `.env` and configure:
 - **Logging**: `LOG_LEVEL`, `LOG_FILE`
 - **Service**: `NODE_ENV`, reconnection settings
 
+## Log Management
+
+### Current Logging Configuration
+
+The project creates multiple log files during operation:
+
+**PM2 Logs** (from `ecosystem.config.js`):
+- `logs/web-error.log` - Frontend errors
+- `logs/web-out.log` - Frontend output
+- `logs/events-error.log` - Event service errors
+- `logs/events-out.log` - Event service output
+
+**Winston Logs** (from `packages/shared/lib/utils/logger.ts`):
+- `logs/event-service.log` - Custom application logs
+- `logs/exceptions.log` - Uncaught exceptions
+- `logs/rejections.log` - Unhandled promise rejections
+
+### Log Rotation Policy
+
+**Automatic log rotation is configured** to prevent unbounded log file growth:
+
+- **Rotation Trigger**: When log files reach 50MB
+- **Retention**: 7 rotations (approximately 7 days)
+- **Compression**: Old logs compressed with gzip (`.gz` extension)
+- **Method**: System-level logrotate (runs via cron)
+
+### Installation
+
+**One-time setup** (requires sudo):
+
+```bash
+# Install logrotate if not already installed
+# macOS: brew install logrotate
+# Ubuntu/Debian: sudo apt-get install logrotate
+# CentOS/RHEL: sudo yum install logrotate
+
+# Install Cattyshack logrotate configuration
+sudo bash scripts/setup-logrotate.sh
+```
+
+The installation script will:
+1. Update paths in the configuration to match your installation directory
+2. Copy configuration to `/etc/logrotate.d/cattyshack`
+3. Test the configuration for errors
+4. Display setup summary and next steps
+
+### Manual Log Rotation
+
+To manually rotate logs (for testing or maintenance):
+
+```bash
+# Force immediate rotation
+bash scripts/rotate-logs-now.sh
+```
+
+This is useful for:
+- Testing rotation configuration
+- Cleaning up large log files immediately
+- Maintenance before backups or deployments
+
+### Verifying Log Rotation
+
+Check if rotation is working properly:
+
+```bash
+# List log files (rotated logs have .1, .2, etc. extensions)
+ls -lh logs/
+
+# Expected output includes:
+# - *.log (current active logs)
+# - *.log.1 (most recent rotation)
+# - *.log.2.gz, *.log.3.gz, etc. (older compressed rotations)
+```
+
+### Customizing Rotation Policy
+
+To modify rotation settings, edit `config/logrotate.conf`:
+
+**Change rotation size**:
+```
+size 50M  # Change to 100M for 100MB, 10M for 10MB, etc.
+```
+
+**Change retention count**:
+```
+rotate 7  # Change to 14 for 14 rotations, 30 for 30 rotations, etc.
+```
+
+**After making changes**, reinstall the configuration:
+```bash
+sudo bash scripts/setup-logrotate.sh
+```
+
+### Log Monitoring
+
+**View recent logs**:
+```bash
+# PM2 logs (last 100 lines from all processes)
+pm2 logs --lines 100
+
+# Specific service logs
+pm2 logs cattyshack-web --lines 50
+pm2 logs cattyshack-events --lines 50
+
+# View specific log file
+tail -f logs/event-service.log
+```
+
+**Search logs for errors**:
+```bash
+# Search all current logs for errors
+grep -i error logs/*.log
+
+# Search specific time range (if timestamps present)
+grep "2025-10-28" logs/event-service.log | grep ERROR
+```
+
+### Log Cleanup
+
+If you need to manually clear logs:
+
+```bash
+# Remove all log files (WARNING: deletes all logs)
+rm -f logs/*.log logs/*.log.* logs/*.gz
+
+# Remove only rotated logs (keep current logs)
+rm -f logs/*.log.* logs/*.gz
+
+# PM2 will recreate log files automatically on next write
+```
+
+### Troubleshooting Log Rotation
+
+**Rotation not occurring**:
+- Check if logrotate is installed: `logrotate --version`
+- Verify configuration exists: `ls -l /etc/logrotate.d/cattyshack`
+- Test configuration: `sudo logrotate -d /etc/logrotate.d/cattyshack`
+- Check system cron is running (logrotate typically runs daily via cron)
+
+**Permission errors**:
+- Ensure log directory has correct permissions: `chmod 755 logs/`
+- Ensure user/group in config matches your system
+- Edit `config/logrotate.conf` and update `create 0644 user group` line
+
+**Logs still growing too large**:
+- Reduce rotation size in `config/logrotate.conf` (e.g., `size 10M`)
+- Increase rotation frequency by forcing daily rotation
+- Check if all log files are included in the configuration
+
 ## Troubleshooting
 
 ### Import Errors

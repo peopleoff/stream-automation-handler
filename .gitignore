@@ -49,6 +49,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Rotated log files (from logrotate)
+*.log.*
+*.log.*.gz
+
 # PM2
 .pm2
 pm2.log
